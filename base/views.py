@@ -6,6 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 
 from django.urls import reverse_lazy
 from .models import Task
@@ -29,8 +30,11 @@ class RegisterPage(FormView):
     success_url = reverse_lazy('tasks')
 
     def form_valid(self, form):
+        user = form.save()
+        if user is not None:
+            login(self.request, user)
         return super(RegisterPage, self).form_valid(form)
-        
+
 
 
 
