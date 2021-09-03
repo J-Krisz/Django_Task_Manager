@@ -10,15 +10,13 @@ from django.contrib.auth import login
 
 from django.urls import reverse_lazy
 
-
-from .models import Task
-
 # reordering tasks 
+from .forms import PositionForm
 from django.views import View
 from django.shortcuts import redirect
 from django.db import transaction
-from .forms import PositionForm
 
+from .models import Task
 
 class CustomLoginView(LoginView):
     template_name = 'base/login.html'
@@ -89,6 +87,7 @@ class TaskUpdate(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('tasks')
 
 class TaskReorder(View):
+
     def post(self, request):
         form = PositionForm(request.POST)
 
@@ -105,4 +104,8 @@ class TaskDelete(LoginRequiredMixin, DeleteView):
     model = Task
     context_object_name = 'task'
     success_url = reverse_lazy('tasks')
+
+    def get_queryset(self):
+        owner = self.request.user
+        return self.model.objects.filter(user=owner)
 

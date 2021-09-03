@@ -22,16 +22,14 @@
     <input class="button" type="submit" value="Search">
 </form>
 {% if tasks|length > 0 %}
-<a id="add-link" href="{% url 'task-reorder' %}">&#x2b;</a>
+<a id="add-link" href="{% url 'task-create' %}">&#x2b;</a>
 {% endif %}
 </div>
 
-<script href="{% static 'js/main.js'}"></script>
-
-
-
-
-
+<form style="display: none;" id="reorderForm" method="post" action="{% url 'task-reorder' %}">
+    {% csrf_token %}
+    <input type="hidden" id="positionInput" name="position">
+</form>
 
 <div id="tasklist" class="task-items-wrapper">
     {% for task in tasks %}
@@ -49,11 +47,14 @@
         </div>
     </div>
     {% empty %}
-        <h3>No items...</h3>
+        <div style="text-align: center; padding-bottom: 10px; line-height: 1em;">
+            <h3>No new tasks are created.</h3>
+            <h3>Create a <a href="{% url 'task-create' %}">New task</a> ! </h3>
+        </div>
     {% endfor %}
 </div>
 
-
+<script href="{% static 'js/main.js'}"></script>
 
 {% endblock content %}
 
